@@ -1,1 +1,2 @@
 # ft_services
+project ft_services  setup of a Kubernetes cluster. Services include an nginx, an FTPS, a Wordpress and a PHPMyAdmin working with a MySQL database, and a Grafana linked to an InfluxDB database for monitoring. 

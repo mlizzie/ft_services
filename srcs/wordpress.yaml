@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: wordpress
+  name: wordpress
+  annotations:
+    metallb.universe.tf/address-pool: default
+spec:
+  ports:
+  - name: wordpress
+    port: 5050
+    protocol: TCP
+    targetPort: 5050
+  selector:
+    app: wordpress
+  type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: wordpress
+  name: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - image: mlizzie/wordpress:last
+        imagePullPolicy: Always
+        name: wordpress
+        env:
+        - name: WP_USER1_LOGIN
+          value: mlizzie
+        - name: WP_USER1_PSWD
+          value: "12345"
+        - name: WP_USER2_LOGIN
+          value: mlizziel2
+        - name: WP_USER2_PSWD
+          value: mlizzie2pswd
+        - name: DBASE_LOGIN
+          value: root
+        - name: DBASE_PSWD
+          value: toor
+        ports:
+        - containerPort: 5050
